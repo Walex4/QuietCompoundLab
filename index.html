@@ -1,0 +1,537 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Where Does Your Income Land? · Quiet Compound</title>
+<meta name="description" content="Free calculator: see your income class nationally and in your state, where you rank among US households, and what you really keep after 2026 taxes.">
+<meta property="og:title" content="Where does your income really land?">
+<meta property="og:description" content="Free calculator: see your income class nationally and in your state, where you rank among US households, and what you really keep after 2026 taxes.">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary">
+<meta name="theme-color" content="#14213D">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='32' fill='%2314213D'/%3E%3Cellipse cx='24' cy='46' rx='12' ry='4.5' fill='%23E0A526'/%3E%3Cellipse cx='32' cy='36' rx='12' ry='4.5' fill='%23E0A526' fill-opacity='.85'/%3E%3Cellipse cx='40' cy='26' rx='12' ry='4.5' fill='%23E0A526' fill-opacity='.7'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&family=Source+Sans+3:wght@400;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>html{-webkit-text-size-adjust:100%}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<style>
+/* Layout: sticky input rail on the left, a long answer column on the right (verdict → numbers → what-if → truths → share → math). Stacks on phones. */
+:root{
+  --bg:#F7F5EF; --surface:#FFFDF8; --ink:#14213D; --muted:#56607A; --line:#E2DDD0;
+  --gold:#E0A526; --gold-ink:#8A6110; --gold-soft:#FBF1DA; --navy:#14213D; --on-navy:#F7F5EF; --navy-muted:#C3CADA;
+  --tax:#B8613A; --fica:#8C94A8; --state:#C9A57A; --ret:#5E8C7A; --keep:#E0A526; --track:#EDEAE1;
+  --up:#1F7A4D; --down:#B23A2E;
+  --f-display:'Montserrat','Arial Black',Arial,sans-serif;
+  --f-body:'Source Sans 3','Segoe UI',system-ui,sans-serif;
+  --f-num:'IBM Plex Mono',ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0E1526; --surface:#162038; --ink:#EEF0F5; --muted:#A0A8BC; --line:#27324E;
+  --gold:#E8B54A; --gold-ink:#E8B54A; --gold-soft:#2A2515; --navy:#0A1020; --on-navy:#F7F5EF; --navy-muted:#B5BDD0;
+  --tax:#D98260; --fica:#7D869C; --state:#B8956A; --ret:#6FA88F; --keep:#E8B54A; --track:#222C46;
+  --up:#5BC98D; --down:#F08070; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0E1526; --surface:#162038; --ink:#EEF0F5; --muted:#A0A8BC; --line:#27324E;
+  --gold:#E8B54A; --gold-ink:#E8B54A; --gold-soft:#2A2515; --navy:#0A1020; --on-navy:#F7F5EF; --navy-muted:#B5BDD0;
+  --tax:#D98260; --fica:#7D869C; --state:#B8956A; --ret:#6FA88F; --keep:#E8B54A; --track:#222C46;
+  --up:#5BC98D; --down:#F08070; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.5}
+.wrap{max-width:1160px;margin:0 auto;padding-inline:18px;padding-block:24px 56px;display:flex;flex-direction:column;gap:22px}
+.brand{display:flex;align-items:center;gap:10px;font-family:var(--f-display);font-weight:800;font-size:14px;letter-spacing:.06em}
+h1{font-family:var(--f-display);font-weight:900;font-size:clamp(30px,5.2vw,50px);line-height:1.04;margin:0;text-wrap:balance;letter-spacing:-.01em}
+h1 em{font-style:normal;color:var(--gold-ink)}
+.lede{margin:8px 0 0;color:var(--muted);max-width:62ch;font-size:17px}
+h2.sec{font-family:var(--f-display);font-weight:800;font-size:20px;margin:0}
+.secnote{margin:2px 0 0;color:var(--muted);font-size:14px}
+.grid{display:grid;grid-template-columns:minmax(0,350px) minmax(0,1fr);gap:22px;align-items:start}
+@media (max-width:900px){.grid{grid-template-columns:1fr}}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:20px;min-width:0}
+.rail{position:sticky;top:calc(env(safe-area-inset-top,0px) + 12px);display:flex;flex-direction:column;gap:16px}
+@media (max-width:900px){.rail{position:static}}
+.field label,.field .lab{display:block;font-weight:700;font-size:15px;margin-bottom:6px}
+.field small{display:block;color:var(--muted);font-size:13px;margin-top:4px}
+.box{display:flex;align-items:center;border:1.5px solid var(--line);border-radius:10px;background:var(--bg);padding:0 12px}
+.box:focus-within{border-color:var(--gold)}
+.box span{font-family:var(--f-num);color:var(--muted)}
+.box input,.box select{flex:1;min-width:0;border:none;background:transparent;font-family:var(--f-num);font-size:19px;font-weight:600;color:var(--ink);padding:10px 6px;outline:none}
+.box select{font-family:var(--f-body);font-size:16px;cursor:pointer;padding-left:0}
+.seg{display:grid;grid-template-columns:1fr 1fr;border:1.5px solid var(--line);border-radius:10px;overflow:hidden}
+.seg button{font:inherit;font-weight:600;font-size:14px;padding:10px 8px;border:none;background:var(--bg);color:var(--muted);cursor:pointer;min-height:44px}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.people{display:flex;gap:6px;flex-wrap:wrap}
+.people button{font:inherit;font-family:var(--f-num);font-weight:600;width:46px;height:44px;border-radius:10px;border:1.5px solid var(--line);background:var(--bg);color:var(--ink);cursor:pointer}
+.people button[aria-pressed="true"]{border-color:var(--gold);background:var(--gold-soft)}
+.row2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}
+.field{min-width:0}
+.box input{width:100%}
+button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.answer{display:flex;flex-direction:column;gap:22px;min-width:0}
+/* verdict */
+.verdict{background:var(--navy);color:var(--on-navy);border-radius:18px;padding:24px;display:flex;flex-direction:column;gap:16px}
+.k{font-size:12px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;color:var(--gold)}
+.verdict h2{font-family:var(--f-display);font-weight:900;font-size:clamp(30px,4.6vw,44px);margin:2px 0 0;line-height:1.05}
+.verdict p{margin:0;color:var(--navy-muted);max-width:60ch}
+.scale{position:relative;height:58px}
+.scale .bar{position:absolute;left:0;right:0;top:18px;height:12px;border-radius:99px;background:rgba(255,255,255,.12);overflow:hidden}
+.scale .mid{position:absolute;top:0;bottom:0;background:rgba(232,181,74,.38)}
+.scale .ghost{position:absolute;top:14px;height:20px;border:1.5px dashed rgba(255,255,255,.45);border-radius:99px}
+.scale .dot{position:absolute;top:10px;width:28px;height:28px;margin-left:-14px;border-radius:50%;background:var(--gold);border:3px solid var(--navy);box-shadow:0 0 0 2px var(--gold);transition:left .35s}
+.scale .ticks{position:absolute;left:0;right:0;top:40px;font-family:var(--f-num);font-size:12px;color:var(--navy-muted)}
+.scale .ticks span{position:absolute;transform:translateX(-50%);white-space:nowrap}
+.zones{display:flex;justify-content:space-between;font-size:12px;color:var(--navy-muted);text-transform:uppercase;letter-spacing:.08em}
+.legendline{font-size:12px;color:var(--navy-muted);display:flex;gap:16px;flex-wrap:wrap}
+.legendline i{display:inline-block;width:18px;height:8px;border-radius:4px;vertical-align:middle;margin-right:6px}
+/* kpis */
+.kpis{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+@media (max-width:640px){.kpis{grid-template-columns:1fr}}
+.kpi{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:4px}
+.kpi .lab{font-size:13px;font-weight:700;color:var(--muted)}
+.kpi .n{font-family:var(--f-num);font-weight:600;font-size:clamp(26px,3.4vw,32px);line-height:1.1}
+.kpi p{margin:0;font-size:14px;color:var(--muted)}
+.stack{display:flex;height:22px;border-radius:8px;overflow:hidden;margin:14px 0 12px;background:var(--track)}
+.stack i{display:block;height:100%;transition:width .35s}
+.legend{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
+.legend div{display:flex;flex-direction:column;gap:2px;padding-left:12px;border-left:4px solid var(--c)}
+.legend b{font-family:var(--f-num);font-weight:600;font-size:16px}
+.legend span{font-size:13px;color:var(--muted)}
+/* raise finder */
+.finder{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:12px}
+.goal{border:1px solid var(--line);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:4px;background:var(--bg)}
+.goal .t{font-weight:700}
+.goal .n{font-family:var(--f-num);font-weight:600;font-size:20px}
+.goal p{margin:0;font-size:14px;color:var(--muted)}
+/* what-if */
+.whatif{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:20px;margin-top:14px}
+@media (max-width:760px){.whatif{grid-template-columns:1fr}}
+.slider label{display:flex;justify-content:space-between;font-weight:700;font-size:15px}
+.slider label output{font-family:var(--f-num);color:var(--gold-ink)}
+.slider input{width:100%;accent-color:var(--gold);height:32px}
+.slider small{color:var(--muted);font-size:13px}
+.sliders{display:flex;flex-direction:column;gap:14px}
+.cmp{width:100%;border-collapse:collapse;font-size:15px}
+.cmp th,.cmp td{padding:9px 8px;border-bottom:1px solid var(--line);text-align:right;font-family:var(--f-num)}
+.cmp th:first-child,.cmp td:first-child{text-align:left;font-family:var(--f-body);font-weight:600}
+.cmp th{font-family:var(--f-body);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.cmp td.d{font-size:13px}
+.up{color:var(--up)} .down{color:var(--down)}
+.reset{font:inherit;font-size:14px;font-weight:600;background:none;border:none;color:var(--gold-ink);cursor:pointer;padding:6px 0;text-decoration:underline}
+/* truths */
+.truths{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px;margin-top:12px}
+.truth{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px 18px;display:flex;flex-direction:column;gap:6px}
+.truth .myth{font-size:13px;color:var(--muted);text-decoration:line-through;text-decoration-color:var(--down)}
+.truth h3{font-family:var(--f-display);font-size:17px;margin:0;line-height:1.25}
+.truth p{margin:0;font-size:15px}
+.truth b{font-family:var(--f-num);font-weight:600}
+/* share */
+.share{display:grid;grid-template-columns:minmax(0,260px) minmax(0,1fr);gap:20px;align-items:center;margin-top:12px}
+@media (max-width:640px){.share{grid-template-columns:1fr}}
+.share canvas{width:100%;max-width:260px;height:auto;border-radius:12px;border:1px solid var(--line);display:block}
+.btns{display:flex;flex-wrap:wrap;gap:10px}
+.btn{font:inherit;font-weight:700;padding:11px 16px;border-radius:10px;border:none;background:var(--ink);color:var(--bg);cursor:pointer;min-height:44px}
+.btn.alt{background:transparent;color:var(--ink);border:1.5px solid var(--line)}
+.status{font-size:14px;color:var(--muted);min-height:1.2em;margin:6px 0 0}
+.sharetext{font-size:14px;background:var(--bg);border:1px dashed var(--line);border-radius:10px;padding:10px 12px;margin:10px 0 0;user-select:all}
+/* math */
+.tablewrap{overflow-x:auto}
+.brk{width:100%;border-collapse:collapse;font-size:14px;margin-top:10px}
+.brk th,.brk td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--line)}
+.brk td:last-child,.brk th:last-child{text-align:right;font-family:var(--f-num)}
+.brk th{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.brk tr.on td{background:var(--gold-soft);font-weight:600}
+details summary{cursor:pointer;font-family:var(--f-display);font-weight:800;font-size:18px}
+.verify a{color:var(--gold-ink);font-weight:600}
+.vt td:last-child{text-align:left;font-family:var(--f-body)}
+.vt th:last-child{text-align:left}
+.vt td:nth-child(2){font-family:var(--f-num);font-size:13px}
+.foot{font-size:13px;color:var(--muted);display:flex;flex-direction:column;gap:6px}
+.foot a{color:var(--gold-ink)}
+@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="brand">
+    <svg width="28" height="28" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="32" fill="#14213D"/><ellipse cx="24" cy="46" rx="12" ry="4.5" fill="#E0A526"/><ellipse cx="32" cy="36" rx="12" ry="4.5" fill="#E0A526" fill-opacity=".85"/><ellipse cx="40" cy="26" rx="12" ry="4.5" fill="#E0A526" fill-opacity=".7"/></svg>
+    QUIET COMPOUND
+  </div>
+  <header>
+    <h1>Where does your income <em>really</em> land?</h1>
+    <p class="lede" style="font-size:14px;margin-top:4px">Built on IRS, Census, SSA, BEA and Pew data. <a href="#vh" style="color:var(--gold-ink);font-weight:700">Check every number yourself ↓</a></p>
+    <p class="lede">Your class nationally and in your state, where you rank among US households, what you actually keep after 2026 taxes, and the money facts most people get wrong.</p>
+  </header>
+
+  <div class="grid">
+    <aside class="rail">
+      <form class="card" id="f" autocomplete="off" style="display:flex;flex-direction:column;gap:16px">
+        <div class="field">
+          <label for="income">Household income before tax</label>
+          <div class="box"><span>$</span><input id="income" inputmode="numeric" value="100,000"><span>/yr</span></div>
+          <small>Everyone in your household combined.</small>
+        </div>
+        <div class="field">
+          <label for="stateSel">Where you live</label>
+          <div class="box"><select id="stateSel"></select></div>
+          <small id="stateHelp">Sets local prices and an estimated state tax.</small>
+        </div>
+        <div class="field">
+          <span class="lab" id="peopleLab">People in your household</span>
+          <div class="people" role="group" aria-labelledby="peopleLab" id="people">
+            <button type="button" data-n="1" aria-pressed="true">1</button><button type="button" data-n="2" aria-pressed="false">2</button><button type="button" data-n="3" aria-pressed="false">3</button><button type="button" data-n="4" aria-pressed="false">4</button><button type="button" data-n="5" aria-pressed="false">5</button><button type="button" data-n="6" aria-pressed="false">6+</button>
+          </div>
+        </div>
+        <div class="field">
+          <span class="lab" id="statusLab">Filing status</span>
+          <div class="seg" role="group" aria-labelledby="statusLab" id="status">
+            <button type="button" data-s="single" aria-pressed="true">Single</button><button type="button" data-s="mfj" aria-pressed="false">Married, jointly</button>
+          </div>
+        </div>
+        <div class="row2">
+          <div class="field">
+            <label for="k401">401(k) / yr</label>
+            <div class="box"><span>$</span><input id="k401" inputmode="numeric" value="0"></div>
+          </div>
+          <div class="field">
+            <label for="stateRate">State tax</label>
+            <div class="box"><input id="stateRate" inputmode="decimal" value="0"><span>%</span></div>
+          </div>
+        </div>
+        <small style="color:var(--muted);font-size:13px;margin-top:-8px">State tax fills in from your state's rate on a $100K salary. Change it if you know yours.</small>
+      </form>
+    </aside>
+
+    <section class="answer">
+      <div class="verdict" aria-live="polite">
+        <div>
+          <div class="k" id="vk">Your income class</div>
+          <h2 id="cls">Upper income</h2>
+        </div>
+        <p id="clsWhy"></p>
+        <div>
+          <div class="scale" aria-hidden="true">
+            <div class="bar"><div class="mid" id="mid"></div></div>
+            <div class="ghost" id="ghost"></div>
+            <div class="dot" id="dot"></div>
+            <div class="ticks"><span id="tLo"></span><span id="tHi"></span></div>
+          </div>
+          <div class="zones"><span>Lower</span><span>Middle</span><span>Upper</span></div>
+        </div>
+        <div class="legendline"><span><i style="background:rgba(232,181,74,.6)"></i>Middle class where you live</span><span id="ghostLab"><i style="border:1.5px dashed rgba(255,255,255,.6)"></i>National range</span></div>
+      </div>
+
+      <div class="kpis">
+        <div class="kpi"><span class="lab">US rank</span><span class="n" id="pct"></span><p id="pctWhy"></p></div>
+        <div class="kpi"><span class="lab">You keep</span><span class="n" id="keepMo"></span><p id="keepWhy"></p></div>
+        <div class="kpi"><span class="lab">Real federal tax rate</span><span class="n" id="eff"></span><p id="effWhy"></p></div>
+      </div>
+
+      <div class="card">
+        <h2 class="sec">Where every dollar goes</h2>
+        <div class="stack" role="img" id="stack" aria-label="Breakdown of income">
+          <i id="sKeep" style="background:var(--keep)"></i><i id="sFed" style="background:var(--tax)"></i><i id="sFica" style="background:var(--fica)"></i><i id="sState" style="background:var(--state)"></i><i id="sRet" style="background:var(--ret)"></i>
+        </div>
+        <div class="legend">
+          <div style="--c:var(--keep)"><b id="lKeep"></b><span>Take-home</span></div>
+          <div style="--c:var(--tax)"><b id="lFed"></b><span>Federal income tax</span></div>
+          <div style="--c:var(--fica)"><b id="lFica"></b><span>Social Security + Medicare</span></div>
+          <div style="--c:var(--state)"><b id="lState"></b><span>State tax (est.)</span></div>
+          <div style="--c:var(--ret)"><b id="lRet"></b><span>Your 401(k)</span></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2 class="sec">Raise finder</h2>
+        <p class="secnote">How far you are from the next milestone, and what that raise is worth after tax.</p>
+        <div class="finder" id="finder"></div>
+      </div>
+
+      <div class="card">
+        <h2 class="sec">What if…?</h2>
+        <p class="secnote">Drag the sliders. The table compares today with the scenario.</p>
+        <div class="whatif">
+          <div class="sliders">
+            <div class="slider"><label for="wRaise">Raise or pay cut <output id="oRaise">0%</output></label><input type="range" id="wRaise" min="-30" max="60" step="1" value="0"><small>Applied to household income</small></div>
+            <div class="slider"><label for="wK">401(k) contribution <output id="oK">$0</output></label><input type="range" id="wK" min="0" max="24500" step="500" value="0"><small>2026 limit: $24,500 per person</small></div>
+            <div class="slider"><label for="wKids">New people in the household <output id="oKids">0</output></label><input type="range" id="wKids" min="0" max="3" step="1" value="0"><small>A baby, a partner, a parent moving in</small></div>
+            <button class="reset" type="button" id="wReset">Reset scenario</button>
+          </div>
+          <div class="tablewrap">
+            <table class="cmp"><thead><tr><th></th><th>Today</th><th>What if</th><th>Change</th></tr></thead><tbody id="cmp"></tbody></table>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <h2 class="sec">What most people get wrong</h2>
+        <p class="secnote">Calculated from your numbers.</p>
+        <div class="truths" id="truths"></div>
+      </div>
+
+      <div class="card">
+        <h2 class="sec">Share your result</h2>
+        <p class="secnote">A ready-made image for Instagram, TikTok or X. It shows your class and rank, not your exact income.</p>
+        <div class="share">
+          <canvas id="card" width="1080" height="1350" aria-label="Your shareable result card"></canvas>
+          <div>
+            <div class="btns">
+              <button class="btn" type="button" id="saveImg">Save image</button>
+              <button class="btn alt" type="button" id="copyTxt">Copy caption</button>
+            </div>
+            <p class="sharetext" id="shareText"></p>
+            <p class="status" id="shareStatus" role="status"></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <details>
+          <summary>Show the tax math</summary>
+          <div class="tablewrap"><table class="brk"><thead><tr><th>Bracket</th><th>Income in this slice</th><th>Tax</th></tr></thead><tbody id="brk"></tbody></table></div>
+        </details>
+      </div>
+    </section>
+  </div>
+
+  <section class="card verify" aria-labelledby="vh">
+    <h2 class="sec" id="vh">Check every number yourself</h2>
+    <p class="secnote">Every figure this calculator uses, where it comes from, and a link to the original source. Primary sources (the agency that publishes the data) are marked.</p>
+    <div class="tablewrap">
+      <table class="brk vt">
+        <thead><tr><th>What</th><th>Figure we use</th><th>Source</th></tr></thead>
+        <tbody>
+          <tr><td>2026 federal tax brackets</td><td>10% to 37%, e.g. 22% starts at $50,400 (single)</td><td><a href="https://www.irs.gov/newsroom/irs-releases-tax-inflation-adjustments-for-tax-year-2026-including-amendments-from-the-one-big-beautiful-bill" target="_blank" rel="noopener">IRS newsroom</a> · primary</td></tr>
+          <tr><td>2026 standard deduction</td><td>$16,100 single · $32,200 married jointly</td><td><a href="https://www.irs.gov/newsroom/irs-releases-tax-inflation-adjustments-for-tax-year-2026-including-amendments-from-the-one-big-beautiful-bill" target="_blank" rel="noopener">IRS newsroom</a> · primary</td></tr>
+          <tr><td>2026 401(k) limit</td><td>$24,500</td><td><a href="https://www.irs.gov/node/152316" target="_blank" rel="noopener">IRS</a> · primary</td></tr>
+          <tr><td>Social Security wage base</td><td>$184,500 (6.2% tax stops above it)</td><td><a href="https://www.ssa.gov/oact/cola/cbb.html" target="_blank" rel="noopener">Social Security Administration</a> · primary</td></tr>
+          <tr><td>Median household income (2025)</td><td>$87,460</td><td><a href="https://www.census.gov/library/publications/2026/demo/p60-289.html" target="_blank" rel="noopener">U.S. Census Bureau, Income in the United States: 2025</a> · primary</td></tr>
+          <tr><td>Middle-class definition</td><td>Two-thirds to double the median, adjusted for household size</td><td><a href="https://www.pewresearch.org/short-reads/2024/09/16/are-you-in-the-american-middle-class/" target="_blank" rel="noopener">Pew Research Center</a> · primary</td></tr>
+          <tr><td>Middle-class ranges by household size</td><td>e.g. $31,600–$94,200 for one person</td><td><a href="https://www.compoundladder.com/guides/what-is-middle-class-income-2026" target="_blank" rel="noopener">Pew method applied to Census ACS 2024 (Compound Ladder)</a></td></tr>
+          <tr><td>Prices by state</td><td>e.g. California 112.6, Arkansas 86.5 (US = 100), 2023</td><td><a href="https://www.bea.gov/data/prices-inflation/regional-price-parities-state-and-metro-area" target="_blank" rel="noopener">Bureau of Economic Analysis, Regional Price Parities</a> · primary</td></tr>
+          <tr><td>US household income ranks</td><td>e.g. 75th percentile $159,510</td><td><a href="https://dqydj.com/household-income-percentiles/" target="_blank" rel="noopener">DQYDJ, from Census CPS ASEC 2026</a></td></tr>
+          <tr><td>State tax estimate</td><td>Each state's tax on a $100K single salary</td><td><a href="https://paybrackets.com/100000-after-taxes" target="_blank" rel="noopener">PayBrackets 2026</a> · estimate</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="secnote">Found a number that doesn't match the source? Tell us in the video comments and we'll fix it and pin the correction.</p>
+  </section>
+
+  <div class="foot">
+    <p><b>Sources.</b> Tax brackets, standard deductions and the $24,500 401(k) limit: IRS 2026 figures. Social Security wage base $184,500: SSA. Middle-class range: Pew Research Center method (two-thirds to double the median, adjusted for household size) on Census ACS 2024 data, scaled by BEA Regional Price Parities (2023, released Dec 2024) for your state. US rank: household income percentiles from Census CPS ASEC 2026 (2025 incomes) via DQYDJ. State tax: each state's tax on a $100,000 single salary in 2026 (PayBrackets), applied as a flat rate, so treat it as an estimate.</p>
+    <p>Made by <a href="https://www.youtube.com/@QuietCompoundLab" target="_blank" rel="noopener">Quiet Compound on YouTube</a>: plain-English money math with every source shown.</p>
+    <p>Excludes tax credits, itemized deductions and local taxes. FICA assumes one earner. For education, not financial advice. Nothing you enter leaves this page.</p>
+  </div>
+</div>
+
+<script>
+const PEW = {1:[31600,94200],2:[44600,133300],3:[54700,163200],4:[63100,188500],5:[70600,210700],6:[77300,230800]};
+const BR = {
+  single:{std:16100, addl:200000, b:[[0,.10],[12400,.12],[50400,.22],[105700,.24],[201775,.32],[256225,.35],[640600,.37]]},
+  mfj:{std:32200, addl:250000, b:[[0,.10],[24800,.12],[100800,.22],[211400,.24],[403550,.32],[512450,.35],[768700,.37]]}
+};
+const PCT = [[0,0],[10,20005],[20,35740],[25,43708],[30,51306],[40,68553],[50,87288],[60,110220],[70,140901],[75,159510],[80,182372],[90,261248],[95,354000],[99,704999]];
+// [code, name, RPP 2023, state tax % on $100K single 2026]
+const STATES = [["US","National average",100,0],["AL","Alabama",90.0,4.76],["AK","Alaska",101.7,0],["AZ","Arizona",101.1,2.29],["AR","Arkansas",86.5,3.69],["CA","California",112.6,6.37],["CO","Colorado",101.4,3.69],["CT","Connecticut",103.7,4.75],["DE","Delaware",99.3,5.26],["DC","District of Columbia",110.8,5.53],["FL","Florida",103.5,0],["GA","Georgia",96.7,4.57],["HI","Hawaii",108.6,6.07],["ID","Idaho",91.4,4.19],["IL","Illinois",98.9,4.81],["IN","Indiana",92.2,2.92],["IA","Iowa",88.8,3.15],["KS","Kansas",90.0,4.78],["KY","Kentucky",90.5,3.38],["LA","Louisiana",88.3,2.61],["ME","Maine",97.1,5.65],["MD","Maryland",104.0,4.39],["MA","Massachusetts",108.2,5.24],["MI","Michigan",94.2,3.99],["MN","Minnesota",98.4,5.28],["MS","Mississippi",87.3,3.27],["MO","Missouri",91.8,3.76],["MT","Montana",90.2,4.29],["NE","Nebraska",90.4,3.67],["NV","Nevada",97.0,0],["NH","New Hampshire",105.3,0],["NJ","New Jersey",108.9,4.18],["NM","New Mexico",90.4,3.57],["NY","New York",107.6,4.86],["NC","North Carolina",94.1,3.48],["ND","North Dakota",88.6,0.69],["OH","Ohio",91.8,1.97],["OK","Oklahoma",88.3,3.96],["OR","Oregon",104.7,7.92],["PA","Pennsylvania",97.5,3.07],["RI","Rhode Island",101.4,3.15],["SC","South Carolina",93.2,4.84],["SD","South Dakota",88.1,0],["TN","Tennessee",92.5,0],["TX","Texas",97.2,0],["UT","Utah",95.0,4.50],["VT","Vermont",96.6,4.14],["VA","Virginia",100.7,4.94],["WA","Washington",108.6,0.58],["WV","West Virginia",89.8,3.89],["WI","Wisconsin",93.1,4.43],["WY","Wyoming",90.8,0]];
+const K401MAX = 24500, SSBASE = 184500, MEDIAN = 87460;
+
+const st = {people:1, status:'single', state:'US'};
+const $ = id => document.getElementById(id);
+const usd = n => (n<0?'−':'') + '$' + Math.round(Math.abs(n)).toLocaleString('en-US');
+const num = v => { const n = parseFloat(String(v).replace(/[^0-9.]/g,'')); return isFinite(n) ? n : 0; };
+const stateRow = () => STATES.find(s=>s[0]===st.state);
+const ord = n => { const s=['th','st','nd','rd'], v=n%100; return n+(s[(v-20)%10]||s[v]||s[0]); };
+
+$('stateSel').innerHTML = STATES.map(s=>`<option value="${s[0]}">${s[1]}</option>`).join('');
+
+function percentile(inc){
+  if(inc >= PCT[PCT.length-1][1]) return 99.5;
+  for(let i=1;i<PCT.length;i++){ const [p1,v1]=PCT[i-1],[p2,v2]=PCT[i]; if(inc<=v2) return p1+(inc-v1)/(v2-v1)*(p2-p1); }
+  return 99.5;
+}
+function incomeAtPct(p){ for(let i=1;i<PCT.length;i++){ const [p1,v1]=PCT[i-1],[p2,v2]=PCT[i]; if(p<=p2) return v1+(p-p1)/(p2-p1)*(v2-v1);} return PCT[PCT.length-1][1]; }
+
+function calc(inc, people, k, status, stRate, rpp){
+  status = status||st.status; k = Math.min(Math.max(0,k), inc);
+  const T = BR[status], taxable = Math.max(0, inc - k - T.std);
+  let fed = 0, rows = [], top = .10;
+  T.b.forEach(([lo,r],i)=>{ const hi = i+1<T.b.length ? T.b[i+1][0] : Infinity; const slice = Math.max(0, Math.min(taxable,hi)-lo); if(slice>0){ fed+=slice*r; top=r; rows.push([r,lo,hi,slice,slice*r]); } });
+  const fica = Math.min(inc,SSBASE)*.062 + inc*.0145 + Math.max(0, inc-T.addl)*.009;
+  const stx = Math.max(0, inc-k)*stRate;
+  const keep = Math.max(0, inc - k - fed - fica - stx);
+  const p = Math.min(Math.max(people,1),6);
+  const [nlo,nhi] = PEW[p], lo = nlo*rpp/100, hi = nhi*rpp/100;
+  const cls = inc<lo ? 'Lower income' : inc>hi ? 'Upper income' : 'Middle class';
+  const ncls = inc<nlo ? 'Lower income' : inc>nhi ? 'Upper income' : 'Middle class';
+  return {inc,k,taxable,fed,fica,stx,keep,top,rows,lo,hi,nlo,nhi,cls,ncls,people:p,pct:percentile(inc)};
+}
+function inputs(){
+  const s = stateRow();
+  return {inc:num($('income').value), k:num($('k401').value), rate:Math.min(num($('stateRate').value),15)/100, rpp:s[2], s};
+}
+
+function renderVerdict(c, I){
+  const who = c.people===1 ? 'one person' : c.people===6 ? 'six or more people' : `${c.people} people`;
+  const place = I.s[0]==='US' ? 'nationally' : `in ${I.s[1]}`;
+  $('vk').textContent = I.s[0]==='US' ? 'Your income class · US' : `Your income class · ${I.s[1]}`;
+  $('cls').textContent = c.cls;
+  let why = `For ${who}, middle class ${place} runs from ${usd(c.lo)} to ${usd(c.hi)} a year. `;
+  why += c.cls==='Middle class' ? `${usd(c.inc)} sits ${Math.round((c.inc-c.lo)/(c.hi-c.lo)*100)}% of the way up.` : c.cls==='Upper income' ? `${usd(c.inc)} is ${usd(c.inc-c.hi)} above the top.` : `${usd(c.inc)} is ${usd(c.lo-c.inc)} below the bottom.`;
+  if(I.s[0]!=='US'){
+    const diff = Math.round(I.rpp-100);
+    why += ` Prices here run ${Math.abs(diff)}% ${diff>=0?'above':'below'} the US average, so your income buys what ${usd(c.inc*100/I.rpp)} buys nationally.`;
+    if(c.ncls!==c.cls) why += ` Nationally you'd count as ${c.ncls.toLowerCase()}.`;
+  }
+  $('clsWhy').textContent = why;
+  const max = Math.max(c.hi,c.nhi)*1.5, pos = v => Math.max(0,Math.min(100, v/max*100));
+  $('mid').style.left = pos(c.lo)+'%'; $('mid').style.width = (pos(c.hi)-pos(c.lo))+'%';
+  const g = $('ghost'); g.hidden = I.s[0]==='US'; $('ghostLab').hidden = I.s[0]==='US';
+  g.style.left = pos(c.nlo)+'%'; g.style.width = (pos(c.nhi)-pos(c.nlo))+'%';
+  $('dot').style.left = pos(c.inc)+'%';
+  $('tLo').style.left = pos(c.lo)+'%'; $('tLo').textContent = usd(c.lo);
+  $('tHi').style.left = pos(c.hi)+'%'; $('tHi').textContent = usd(c.hi);
+}
+
+function renderKpis(c){
+  const p = c.pct;
+  $('pct').textContent = p>=99 ? 'Top 1%' : `Top ${Math.max(1,Math.ceil(100-p))}%`;
+  $('pctWhy').textContent = p>=99 ? 'You earn more than 99% of US households.' : `You earn more than ${Math.floor(p)}% of US households. The median is ${usd(MEDIAN)}.`;
+  $('keepMo').textContent = usd(c.keep/12)+'/mo';
+  $('keepWhy').textContent = `${usd(c.keep)} a year, or ${Math.round(c.inc?c.keep/c.inc*100:0)}¢ of every dollar you earn.`;
+  const eff = c.inc ? c.fed/c.inc*100 : 0;
+  $('eff').textContent = eff.toFixed(1)+'%';
+  $('effWhy').textContent = `Not ${Math.round(c.top*100)}%. Your top bracket only taxes your last slice of income.`;
+  const tot=c.inc||1, w=v=>(v/tot*100)+'%';
+  $('sKeep').style.width=w(c.keep); $('sFed').style.width=w(c.fed); $('sFica').style.width=w(c.fica); $('sState').style.width=w(c.stx); $('sRet').style.width=w(c.k);
+  $('stack').setAttribute('aria-label',`Of ${usd(c.inc)}: take-home ${usd(c.keep)}, federal tax ${usd(c.fed)}, FICA ${usd(c.fica)}, state ${usd(c.stx)}, 401(k) ${usd(c.k)}`);
+  $('lKeep').textContent=usd(c.keep); $('lFed').textContent=usd(c.fed); $('lFica').textContent=usd(c.fica); $('lState').textContent=usd(c.stx); $('lRet').textContent=usd(c.k);
+}
+
+function renderFinder(c, I){
+  const goals = [];
+  if(c.cls==='Lower income') goals.push(['Reach the middle class', c.lo]);
+  if(c.cls==='Middle class') goals.push(['Reach upper income', c.hi]);
+  [50,75,90,95,99].filter(m=>m>c.pct+0.01).slice(0,2).forEach(m=>goals.push([m===50?'Out-earn half of US households':`Join the top ${100-m}%`, incomeAtPct(m)]));
+  if(!goals.length){ $('finder').innerHTML = '<div class="goal"><span class="t">You’re in the top 1% of US households.</span><p>No higher milestone to show.</p></div>'; return; }
+  $('finder').innerHTML = goals.map(([t,target])=>{
+    const raise = Math.max(0, Math.ceil((target - c.inc)/100)*100+100);
+    const after = calc(c.inc+raise, c.people, c.k, st.status, I.rate, I.rpp);
+    const net = after.keep - c.keep;
+    return `<div class="goal"><span class="t">${t}</span><span class="n">+${usd(raise)}/yr</span><p>That's a ${c.inc?Math.round(raise/c.inc*100):0}% raise. After tax you'd keep about <b>${usd(net)}</b> of it, or ${usd(net/12)} a month.</p></div>`;
+  }).join('');
+}
+
+function renderWhatIf(c, I){
+  const r = +$('wRaise').value, k = +$('wK').value, kids = +$('wKids').value;
+  $('oRaise').textContent = (r>0?'+':'')+r+'%'; $('oK').textContent = usd(k); $('oKids').textContent = '+'+kids;
+  const inc2 = c.inc*(1+r/100);
+  const k2 = Math.min(k + 0, inc2);
+  const d = calc(inc2, Math.min(c.people+kids,6), k2, st.status, I.rate, I.rpp);
+  const rows = [
+    ['Household income', c.inc, d.inc, 'usd'],
+    ['Income class', c.cls, d.cls, 'text'],
+    ['US rank', c.pct, d.pct, 'pct'],
+    ['401(k) savings / yr', c.k, d.k, 'usd'],
+    ['Federal income tax', c.fed, d.fed, 'usdInv'],
+    ['Take-home / month', c.keep/12, d.keep/12, 'usd'],
+  ];
+  const fmt = (v,t)=> t==='text'? v : t==='pct' ? (v>=99?'Top 1%':`Top ${Math.max(1,Math.ceil(100-v))}%`) : usd(v);
+  $('cmp').innerHTML = rows.map(([lab,a,b,t])=>{
+    let ch='';
+    if(t==='text') ch = a===b ? '—' : `<span class="up">changes</span>`;
+    else if(t==='pct'){ const dd=Math.round(b-a); ch = dd===0?'—':`<span class="${dd>0?'up':'down'}">${dd>0?'+':''}${dd} pts</span>`; }
+    else { const dd=b-a; const good = t==='usdInv' ? dd<0 : dd>0; ch = Math.abs(dd)<1?'—':`<span class="${good?'up':'down'}">${dd>0?'+':'−'}${usd(Math.abs(dd))}</span>`; }
+    return `<tr><td>${lab}</td><td>${fmt(a,t)}</td><td>${fmt(b,t)}</td><td class="d">${ch}</td></tr>`;
+  }).join('');
+}
+
+function renderTruths(c, I){
+  const T = BR[st.status];
+  const next = calc(c.inc+1000, c.people, c.k, st.status, I.rate, I.rpp);
+  const keepPer1k = next.keep - c.keep;
+  const kTest = Math.min(1000, Math.max(0,c.inc-c.k));
+  const withK = calc(c.inc, c.people, c.k + kTest, st.status, I.rate, I.rpp);
+  const costOf1k = c.keep - withK.keep;
+  const maxK = calc(c.inc, c.people, Math.min(K401MAX, c.inc), st.status, I.rate, I.rpp);
+  const maxSave = (c.fed + c.stx) - (maxK.fed + maxK.stx);
+  const cards = [];
+  cards.push({m:'"A raise can bump me into a higher bracket and cut my pay."', h:'A raise never shrinks your paycheck.', p:`Only the dollars above a bracket line are taxed at the higher rate. Of your next $1,000 raise you'd keep <b>${usd(keepPer1k)}</b>.`});
+  if(kTest>0) cards.push({m:'"Saving $1,000 in my 401(k) costs me $1,000."', h:'Your 401(k) comes with a tax discount.', p:`Putting in $1,000 lowers your take-home by only <b>${usd(costOf1k)}</b>. Contributing the full ${usd(Math.min(K401MAX,c.inc))} would cut your income taxes by about <b>${usd(maxSave)}</b> this year.`});
+  cards.push({m:'"I pay my tax rate on every dollar."', h:`Your first ${usd(T.std)} is tax-free.`, p:`The standard deduction means no federal income tax on it. Your real federal rate is <b>${(c.inc?c.fed/c.inc*100:0).toFixed(1)}%</b>, not ${Math.round(c.top*100)}%.`});
+  if(c.inc > SSBASE) cards.push({m:'"Social Security tax hits all my pay."', h:'Social Security tax stops at $184,500.', p:`Pay above that line skips the 6.2% tax. That saves you <b>${usd((c.inc-SSBASE)*.062)}</b> a year compared with a flat 6.2%.`});
+  else cards.push({m:'"My 401(k) lowers all my taxes."', h:'Social Security and Medicare still apply.', p:`Your 401(k) lowers income tax, but 7.65% still comes off every dollar first: <b>${usd(c.fica)}</b> a year at your income.`});
+  if(I.s[0]!=='US') cards.push({m:'"$100K is $100K anywhere."', h:`Where you live changes your class.`, p:`Prices in ${I.s[1]} run ${Math.abs(Math.round(I.rpp-100))}% ${I.rpp>=100?'above':'below'} average. Your ${usd(c.inc)} buys what <b>${usd(c.inc*100/I.rpp)}</b> buys nationally.`});
+  else cards.push({m:'"$100K is $100K anywhere."', h:'Your state can swing your class.', p:`Prices run from about 13% below average (Arkansas) to about 13% above (California). Pick your state above to see your local class.`});
+  cards.push({m:'"Middle class means a set salary."', h:'Household size moves the line.', p:`At ${usd(c.inc)}, adding one more person to your household ${c.people<6 ? `moves the middle-class ceiling to <b>${usd(PEW[Math.min(c.people+1,6)][1]*I.rpp/100)}</b>` : 'no longer moves the line in this calculator'}. Try it with the "What if" slider.`});
+  $('truths').innerHTML = cards.map(x=>`<article class="truth"><span class="myth">${x.m}</span><h3>${x.h}</h3><p>${x.p}</p></article>`).join('');
+}
+
+function renderBrackets(c){
+  $('brk').innerHTML = c.rows.length ? c.rows.map((r,i)=>`<tr class="${i===c.rows.length-1?'on':''}"><td>${Math.round(r[0]*100)}%</td><td>${usd(r[3])} <span style="color:var(--muted)">(${usd(r[1])}${isFinite(r[2])?' – '+usd(r[2]):'+'})</span></td><td>${usd(r[4])}</td></tr>`).join('')
+    + `<tr><td><b>Total</b></td><td>Taxable income ${usd(c.taxable)} (income − 401(k) − ${usd(BR[st.status].std)} deduction)</td><td><b>${usd(c.fed)}</b></td></tr>`
+    : `<tr><td colspan="3">No federal income tax: your income after 401(k) is below the ${usd(BR[st.status].std)} standard deduction.</td></tr>`;
+}
+
+/* share card */
+let shareTxt = '';
+function wrapText(ctx, text, x, y, maxW, lh){ const words=text.split(' '); let line=''; for(const w of words){ const t=line?line+' '+w:w; if(ctx.measureText(t).width>maxW && line){ ctx.fillText(line,x,y); line=w; y+=lh; } else line=t; } ctx.fillText(line,x,y); return y; }
+function drawCard(c, I){
+  const cv=$('card'), x=cv.getContext('2d'), W=1080, H=1350;
+  x.fillStyle='#14213D'; x.fillRect(0,0,W,H);
+  x.strokeStyle='rgba(224,165,38,.25)'; x.lineWidth=6; x.beginPath(); x.moveTo(0,H-120); x.bezierCurveTo(400,H-140,700,H-420,W,H-760); x.stroke();
+  x.fillStyle='#E0A526'; x.font='800 34px Montserrat, Arial, sans-serif'; x.fillText('QUIET COMPOUND',90,130);
+  x.fillStyle='#C3CADA'; x.font='600 40px "Source Sans 3", Arial, sans-serif';
+  const who = c.people===1?'a household of 1':c.people===6?'a household of 6+':`a household of ${c.people}`;
+  const where = I.s[0]==='US'?'in the US':`in ${I.s[1]}`;
+  wrapText(x, `For ${who} ${where}, I'm`, 90, 300, 900, 52);
+  x.fillStyle='#F7F5EF'; x.font='900 128px Montserrat, Arial, sans-serif';
+  const words = c.cls.toUpperCase().split(' ');
+  x.fillText(words[0], 90, 470); if(words[1]) x.fillText(words[1], 90, 600);
+  x.fillStyle='#E0A526'; x.fillRect(90,660,140,10);
+  const rank = c.pct>=99?'Top 1%':`Top ${Math.max(1,Math.ceil(100-c.pct))}%`;
+  x.fillStyle='#E0A526'; x.font='600 96px "IBM Plex Mono", Consolas, monospace'; x.fillText(rank, 90, 810);
+  x.fillStyle='#C3CADA'; x.font='600 40px "Source Sans 3", Arial, sans-serif'; x.fillText('of US households by income', 90, 870);
+  x.fillStyle='#F7F5EF'; x.font='600 64px "IBM Plex Mono", Consolas, monospace'; x.fillText(`${(c.inc?c.fed/c.inc*100:0).toFixed(1)}%`, 90, 1010);
+  x.fillStyle='#C3CADA'; x.font='600 40px "Source Sans 3", Arial, sans-serif'; x.fillText('my real federal tax rate', 90, 1066);
+  x.fillStyle='#F7F5EF'; x.font='800 46px Montserrat, Arial, sans-serif'; x.fillText('Where does yours land?', 90, 1220);
+  x.fillStyle='#E0A526'; x.font='600 36px "Source Sans 3", Arial, sans-serif'; x.fillText('Free calculator on Quiet Compound', 90, 1275);
+  shareTxt = `I just found out I'm ${c.cls.toLowerCase()} ${where} for my household size, and ${rank.toLowerCase()} of US households. My real federal tax rate is ${(c.inc?c.fed/c.inc*100:0).toFixed(1)}%, not my bracket. Where does your income land? Free calculator from Quiet Compound.`;
+  $('shareText').textContent = shareTxt;
+}
+
+$('saveImg').addEventListener('click', ()=>{
+  const s=$('shareStatus');
+  $('card').toBlob(blob=>{
+    if(!blob){ s.textContent='Couldn’t make the image. Take a screenshot of the card instead.'; return; }
+    const url=URL.createObjectURL(blob), a=document.createElement('a');
+    a.href=url; a.download='my-income-result.png'; document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url), 4000);
+    s.textContent='Image saved to your downloads.';
+  },'image/png');
+});
+$('copyTxt').addEventListener('click', async()=>{
+  const s=$('shareStatus');
+  try{ await navigator.clipboard.writeText(shareTxt); s.textContent='Caption copied.'; }
+  catch(e){ const r=document.createRange(); r.selectNodeContents($('shareText')); const sel=getSelection(); sel.removeAllRanges(); sel.addRange(r); s.textContent='Caption selected. Press Ctrl+C or Cmd+C to copy.'; }
+});
+
+function render(){
+  const I = inputs();
+  const c = calc(I.inc, st.people, I.k, st.status, I.rate, I.rpp);
+  renderVerdict(c,I); renderKpis(c); renderFinder(c,I); renderWhatIf(c,I); renderTruths(c,I); renderBrackets(c); drawCard(c,I);
+}
+
+function fmtMoney(el){ const n=num(el.value); el.value = n ? Math.round(n).toLocaleString('en-US') : (el.value===''?'':'0'); }
+['income','k401'].forEach(id=>$(id).addEventListener('input',e=>{fmtMoney(e.target);render();}));
+$('stateRate').addEventListener('input',render);
+$('stateSel').addEventListener('change',e=>{ st.state=e.target.value; const s=stateRow(); $('stateRate').value = s[3]; $('stateHelp').textContent = s[0]==='US' ? 'Sets local prices and an estimated state tax.' : `Prices ${Math.abs(Math.round(s[2]-100))}% ${s[2]>=100?'above':'below'} the US average. State tax on a $100K salary: ${s[3]}%.`; render(); });
+$('people').addEventListener('click',e=>{const b=e.target.closest('button'); if(!b) return; st.people=+b.dataset.n; [...$('people').children].forEach(x=>x.setAttribute('aria-pressed',x===b)); render();});
+$('status').addEventListener('click',e=>{const b=e.target.closest('button'); if(!b) return; st.status=b.dataset.s; [...$('status').children].forEach(x=>x.setAttribute('aria-pressed',x===b)); render();});
+['wRaise','wK','wKids'].forEach(id=>$(id).addEventListener('input',render));
+$('wReset').addEventListener('click',()=>{ $('wRaise').value=0; $('wK').value=Math.min(K401MAX,num($('k401').value)); $('wKids').value=0; render(); });
+$('k401').addEventListener('change',()=>{ $('wK').value=Math.min(K401MAX,num($('k401').value)); render(); });
+$('f').addEventListener('submit',e=>e.preventDefault());
+render();
+if(document.fonts && document.fonts.ready) document.fonts.ready.then(render);
+</script>
+</body>
+</html>
