@@ -3,9 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Where Does Your Income Land? · Quiet Compound</title>
+<title>Quiet Compound Income Calculator</title>
 <meta name="description" content="Free calculator: see your income class nationally and in your state, where you rank among US households, and what you really keep after 2026 taxes.">
-<meta property="og:title" content="Where does your income really land?">
+<meta property="og:title" content="Quiet Compound Income Calculator">
 <meta property="og:description" content="Free calculator: see your income class nationally and in your state, where you rank among US households, and what you really keep after 2026 taxes.">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary">
@@ -157,7 +157,8 @@ details summary{cursor:pointer;font-family:var(--f-display);font-weight:800;font
     QUIET COMPOUND
   </div>
   <header>
-    <h1>Where does your income <em>really</em> land?</h1>
+    <h1>Quiet Compound <em>Income Calculator</em></h1>
+    <p class="lede" style="font-size:20px;color:var(--ink);font-weight:600;margin-top:10px">See your income class, US rank and real take-home pay.</p>
     <p class="lede" style="font-size:14px;margin-top:4px">Built on IRS, Census, SSA, BEA and Pew data. <a href="#vh" style="color:var(--gold-ink);font-weight:700">Check every number yourself ↓</a></p>
     <p class="lede">Your class nationally and in your state, where you rank among US households, what you actually keep after 2026 taxes, and the money facts most people get wrong.</p>
   </header>
@@ -493,8 +494,8 @@ function drawCard(c, I){
   x.fillStyle='#F7F5EF'; x.font='600 64px "IBM Plex Mono", Consolas, monospace'; x.fillText(`${(c.inc?c.fed/c.inc*100:0).toFixed(1)}%`, 90, 1010);
   x.fillStyle='#C3CADA'; x.font='600 40px "Source Sans 3", Arial, sans-serif'; x.fillText('my real federal tax rate', 90, 1066);
   x.fillStyle='#F7F5EF'; x.font='800 46px Montserrat, Arial, sans-serif'; x.fillText('Where does yours land?', 90, 1220);
-  x.fillStyle='#E0A526'; x.font='600 36px "Source Sans 3", Arial, sans-serif'; x.fillText('Free calculator on Quiet Compound', 90, 1275);
-  shareTxt = `I just found out I'm ${c.cls.toLowerCase()} ${where} for my household size, and ${rank.toLowerCase()} of US households. My real federal tax rate is ${(c.inc?c.fed/c.inc*100:0).toFixed(1)}%, not my bracket. Where does your income land? Free calculator from Quiet Compound.`;
+  x.fillStyle='#E0A526'; x.font='600 36px "Source Sans 3", Arial, sans-serif'; x.fillText('Quiet Compound Income Calculator', 90, 1275);
+  shareTxt = `I just found out I'm ${c.cls.toLowerCase()} ${where} for my household size, and ${rank.toLowerCase()} of US households. My real federal tax rate is ${(c.inc?c.fed/c.inc*100:0).toFixed(1)}%, not my bracket. Where does your income land? Try the free Quiet Compound Income Calculator.`;
   $('shareText').textContent = shareTxt;
 }
 
