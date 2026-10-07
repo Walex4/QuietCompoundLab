@@ -2,6 +2,8 @@
 
 A free calculator from [Quiet Compound](https://www.youtube.com/@QuietCompoundLab).
 
+**Use it here: https://quietcompoundlab.pages.dev**
+
 Enter your household income, state and household size to see:
 
 - your income class (Pew Research Center method), nationally and adjusted for prices in your state
