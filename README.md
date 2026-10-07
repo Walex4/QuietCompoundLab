@@ -1,4 +1,4 @@
-# Where does your income really land?
+# Quiet Compound Income Calculator
 
 A free calculator from [Quiet Compound](https://www.youtube.com/@QuietCompoundLab).
 
